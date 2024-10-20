@@ -9,6 +9,9 @@ __pycache__/
 # model AI
 *.h5
 
+# image
+*.jpg
+
 # Distribution / packaging
 .Python
 build/
