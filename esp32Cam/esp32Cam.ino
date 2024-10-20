@@ -7,7 +7,8 @@ const char *ssid = "Viet";
 const char *password = "0902042212";
 // const char *ssid = "zzz";
 // const char *password = "123456789";
-const char* serverName = "http://192.168.1.4:8000/";
+const char* serverName = "http://192.168.1.2:8000/";
+const char* esp8266_url = "http://192.168.1.3/capture-complete";
 
 WebServer server(80);
 
@@ -152,12 +153,25 @@ void capture() {
           esp_camera_fb_return(fb);
           http.end();
           delay(100);  // Thêm delay giữa các lần gửi để tránh quá tải server
-        }
+    }
     
     // Gửi tín hiệu để ESP8266 nhận dữ liệu
     server.send(200, "text/plain", "Capture complete");
+    notifyESP8266();
   }
+  
 }
 
 
-
+void notifyESP8266(){
+  HTTPClient http;
+  
+  http.begin(esp8266_url);  // Gửi yêu cầu HTTP tới ESP8266
+  int httpResponseCode = http.GET();
+  if (httpResponseCode > 0) {
+    Serial.println("Notification sent to ESP8266.");
+  } else {
+    Serial.printf("Error sending notification: %d\n", httpResponseCode);
+  }
+  http.end();
+}
