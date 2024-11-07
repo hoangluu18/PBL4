@@ -24,7 +24,7 @@ def predict(tensor):
     return res
 
 def index():
-    file_path = r"D:\Code\PBL4\Server_Backend_API\wwwroot\Images\reduce-paper-waste.jpg"
+    file_path = r"D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\paper-ball-with-white-background.jpg"
     with open(file_path, 'rb') as file:
         image_bytes=file.read()
         image=Image.open(io.BytesIO(image_bytes))
