@@ -3,12 +3,12 @@
 #include <HTTPClient.h>
 #include <WebServer.h>
 
-const char *ssid = "Viet";
-const char *password = "0902042212";
-// const char *ssid = "zzz";
-// const char *password = "123456789";
-const char* serverName = "http://192.168.1.2:8000/";
-const char* esp8266_url = "http://192.168.1.3/capture-complete";
+// const char *ssid = "Viet";
+// const char *password = "0902042212";
+const char *ssid = "zzz";
+const char *password = "123456789";
+const char* serverName = "http://192.168.22.22:8000/";
+const char* esp8266_url = "http://192.168.22.120/capture-complete";
 
 WebServer server(80);
 
@@ -127,7 +127,7 @@ void loop() {
 void capture() {
   // Chụp ảnh và gửi lên server
   if (WiFi.status() == WL_CONNECTED) {
-    for (int i = 0; i < 5; i++) {  // Gửi 10 frame
+    for (int i = 0; i < 3; i++) {  // Gửi 3 frame  
           camera_fb_t * fb = esp_camera_fb_get();
           if (!fb) {
             Serial.println("Camera capture failed");
