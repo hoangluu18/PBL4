@@ -1,11 +1,12 @@
 import firebase_admin
+from fastapi import APIRouter
 from firebase_admin import credentials, db
 import fastapi
 import uvicorn
 from pydantic import BaseModel
 
-app = fastapi.FastAPI()
-
+# app = fastapi.FastAPI()
+noti_router = APIRouter()
 # Khởi tạo Firebase
 cred = credentials.Certificate(r"C:\Users\LENOVO\Downloads\token.json") # path to your token.json
 firebase_admin.initialize_app(cred, {
@@ -17,7 +18,7 @@ class ResultModel(BaseModel):
     result: str
     isFull: bool
 # Endpoint upload_result
-@app.post("/api/upload/result")
+@noti_router.post("/api/upload/result")
 def upload_result(data: ResultModel):
     ref = db.reference(data.result)
     increment_bin_status(ref)
@@ -43,5 +44,5 @@ def bin_full(ref: db.Reference, isFull: bool):
     print(f"Thùng rác đầy")
 
 # Khởi động server
-if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == '__main__':
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
