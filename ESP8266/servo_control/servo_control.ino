@@ -2,8 +2,6 @@
 #include <ESP8266WebServer.h> 
 #include <WiFiClient.h>
 #include <ESP8266HTTPClient.h>
-#include <Stepper.h>
-#include <AccelStepper.h>
 #include <ArduinoJson.h>
 #include <Servo.h>
 
@@ -24,22 +22,15 @@ const int echoPin = D8;
 long duration;
 int distance;
 
-// step motor
-// ULN2003 Motor Driver Pins
-#define IN1 5 //d1
-#define IN2 4 //d2
-#define IN3 14 //d5
-#define IN4 12 //d6
+
 // servo
 Servo servoMoNap;
 Servo servoPhanLoai;  
-const int servoMoNapPin = D4;
-const int servoPhanLoaiPin = ; 
-// const int stepsPerRevolution  = 2048;
-const int stepsPerRevolution  = 4096;
-AccelStepper stepper(AccelStepper::HALF4WIRE, IN1, IN3, IN2, IN4);
+const int servoPhanLoaiPin = D1; 
+const int servoMoNapPin = D2;
+
 String wasteType = "";
-int currentPosition = 0;
+
 
 unsigned long previousMillis = 0; // Lưu trữ thời gian lần đo trước đó
 const long interval = 500;  
@@ -47,11 +38,24 @@ const long interval = 500;
 void setup(){
   // put your setup code here, to run once:
   Serial.begin(115200);
-  // speed motor
-  stepper.setMaxSpeed(500);
-  stepper.setAcceleration(100);
-  myServo.attach(servoPin);
-  // myServo.write(0);
+
+  servoPhanLoai.attach(servoPhanLoaiPin,500,2400);
+  servoPhanLoai.write(0);
+  servoMoNap.attach(servoMoNapPin,500,2400);
+  servoMoNap.write(0);
+  delay(2000);
+  servoMoNap.write(45);
+  Serial.println("45");
+  delay(2000);
+  servoMoNap.write(90);
+  Serial.println("90");
+  delay(2000);
+  servoMoNap.write(135);
+  Serial.println("135");
+  delay(2000);
+  servoMoNap.write(180);
+  Serial.println("180");
+  delay(2000);
 
   // Kết nối WiFi
   WiFi.begin(ssid, password);
@@ -93,12 +97,9 @@ void loop() {
 
   // Nếu có kết quả phân loại, điều khiển động cơ
   if (wasteType != "") {
-    controlStepperMotor(wasteType); // Gọi hàm điều khiển động cơ
-    // Serial.println("mở nắp thùng");
+    controlServoMotor(wasteType); // Gọi hàm điều khiển động cơ
     wasteType = "";                 // Đặt lại loại rác để không quay lại sau
   }
-
-  stepper.run(); // Gọi thường xuyên để động cơ hoạt động
 
   // dalay(500);
 }
@@ -160,50 +161,28 @@ String getResultFromServer() {
   return "";
 }
 
-void controlStepperMotor(String wasteType) {
-  int targetPosition = 0; 
-  Serial.print(wasteType);
+void controlServoMotor(String wasteType) {
   if (wasteType == "paper") {
-    targetPosition = 0;  // Compartment 1 for paper
+    Serial.println(">>> Quay vao o 1");
+    servoPhanLoai.write(22.5);
   } else if (wasteType == "plastic") {
-    targetPosition = 1; // Compartment 2 for plastic
+    Serial.println(">>> Quay vao o 2");
+    servoPhanLoai.write(67.5);
   } else if (wasteType == "glass") {
-    targetPosition = 2; // Compartment 3 for glass
+    Serial.println(">>> Quay vao o 3");
+    servoPhanLoai.write(112.5);
   } else if (wasteType == "metal") {
-    targetPosition = 3; // Compartment 4 for metal
-  }
-  if (targetPosition != currentPosition) {
-    int stepsToMove = (targetPosition - currentPosition) * (4096 / 4);
-    Serial.print(">>> check: ");
-    Serial.println(stepsToMove);
-    Serial.println(stepper.currentPosition());
-
-    // stepper.moveTo(stepper.currentPosition() + stepsToMove);
-    stepper.moveTo(stepsToMove);
-    Serial.print(">>> check cc: ");
-    Serial.println(stepper.currentPosition());
-    stepper.runToPosition();
-    stepper.setCurrentPosition(0);
-    currentPosition = targetPosition; // Cập nhật lại vị trí hiện tại sau khi di chuyển
+    Serial.println(">>> Quay vao o 4");
+    servoPhanLoai.write(157.5);
   }
 
-  while (stepper.distanceToGo() != 0) {
-    stepper.run(); // Chạy cho đến khi động cơ đến vị trí
-    yield(); // Thêm hàm yield() để cho phép hệ thống xử lý tác vụ nền
-  }
-  if (stepper.distanceToGo() == 0) {
-    Serial.println("Đã quay đến đúng vị trí, mở nắp thùng rác.");
-    myServo.write(180);  // Mở nắp thùng
-    delay(2000);               // Giữ nắp mở trong 2 giây (tuỳ chỉnh)
-    myServo.write(0); // Đóng nắp thùng sau 2 giây
-    delay(2000); 
-    Serial.println("Đóng nắp thùng rác.");
-  }
-  
-}
+  delay(1500);
 
-void constrolServor(String wasteType) {
-
+  Serial.println(">>> Mo nap thung rac");
+  servoMoNap.write(30);
+  delay(1000);
+  Serial.println(">>> Dong nap thung rac");
+  servoMoNap.write(0);
 }
 
 void handleCaptureComplete() {

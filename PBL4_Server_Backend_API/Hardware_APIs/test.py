@@ -43,6 +43,7 @@ async def upload_image(request: Request):
         cv2.imwrite(image_path, frame)
 
         predicted_category, probability = predict_waste_category(image_path)
+        print(predicted_category, probability)
         classification_results.append((predicted_category, probability))
         # if len(latest_frames) > 10:
         #     latest_frames.pop(0)
@@ -52,8 +53,8 @@ async def upload_image(request: Request):
 def get_result():
     global classification_results, final_classification_result, latest_frames
 
-    # Chỉ trả về kết quả nếu đã nhận đủ 10 frame
-    if len(classification_results) >= 5:
+    # Chỉ trả về kết quả nếu đã nhận đủ 3 frame
+    if len(classification_results) >= 3 :
         # Đếm số lần xuất hiện của mỗi loại category
         categories = [result[0] for result in classification_results]
         category_count = Counter(categories)
@@ -73,7 +74,7 @@ def get_result():
         # Xóa dữ liệu cũ
         classification_results.clear()
         latest_frames.clear()
-
+        print(final_classification_result)
         return {
             "result": final_classification_result[0],
             "probability": float(final_classification_result[1])  # Chuyển numpy.float32 thành float
