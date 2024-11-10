@@ -12,8 +12,9 @@ const char *password = "123456789";
 ESP8266WebServer server(80);
 
 // url
-String esp32cam_url_capture = "http://192.168.22.244/capture";
-String serverName_getResult = "http://192.168.22.22:8000/result";
+String esp32cam_url_capture = "http://192.168.120.244/capture";
+String serverName_getResult = "http://192.168.120.9:8000/test/result";
+String serverNameSoftwareApiPushNoti = "http://192.168.120.9:8000/noti/api/upload/result";
 
 
 // Cảm biến siêu âm
@@ -91,7 +92,6 @@ void loop() {
     // Kiểm tra xem có ai đến gần để gửi yêu cầu chụp ảnh
     if (distance > 0 && distance < 30) { // Nếu có người đến gần (khoảng cách < 30 cm và hợp lệ)
       sendCaptureRequest();
-      Serial.println("Đã gửi yêu cầu chụp");
     }
   }
 
@@ -101,7 +101,6 @@ void loop() {
     wasteType = "";                 // Đặt lại loại rác để không quay lại sau
   }
 
-  // dalay(500);
 }
 
 long getDistance() {
@@ -131,6 +130,8 @@ void sendCaptureRequest() {
     }
     http.end();
   }
+
+
 }
 
 String getResultFromServer() {
@@ -183,6 +184,7 @@ void controlServoMotor(String wasteType) {
   delay(1000);
   Serial.println(">>> Dong nap thung rac");
   servoMoNap.write(0);
+  guiNoti(wasteType);
 }
 
 void handleCaptureComplete() {
@@ -198,4 +200,27 @@ void handleCaptureComplete() {
 
   server.send(200, "text/plain", "Result received and motor controlled");
   
+}
+
+void guiNoti(String rac) {
+if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client;  
+    HTTPClient http;
+    
+    http.begin(client, serverNameSoftwareApiPushNoti);
+    http.addHeader("Content-Type", "application/json");  // Thiết lập header cho yêu cầu JSON
+
+    // Tạo chuỗi JSON
+    String jsonPayload = "{\"result\":\""  + rac + "\",\"isFull\":false}";
+
+    // Gửi yêu cầu POST với dữ liệu JSON
+    int httpResponseCode = http.POST(jsonPayload);
+    if (httpResponseCode > 0) {
+      String payload = http.getString();
+      Serial.println("Result: " + payload);  // Hiển thị kết quả nhận diện
+    } else {
+      Serial.printf("Error on sending POST: %d\n", httpResponseCode);
+    }
+    http.end();
+  }
 }

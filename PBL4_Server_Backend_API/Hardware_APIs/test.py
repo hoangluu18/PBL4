@@ -1,7 +1,7 @@
 import io
 import cv2
 import numpy as np
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, APIRouter
 import uvicorn
 import threading
 import signal
@@ -13,9 +13,12 @@ from collections import Counter
 from PIL import Image
 from tensorflow.keras.preprocessing import image as keras_image
 from tensorflow.keras.models import load_model
-app = FastAPI()
+# app = FastAPI()
+test_router = APIRouter()
 UPLOAD_FOLDER = './uploads'
-model_path = 'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception.h5'
+#model_path = 'E:/Workspace/PBL4/PBL4_Server_Backend_API/ModelAI/garbage_classification_model_inception_50.h5'
+
+model_path = 'C:/Users/LENOVO/Downloads/garbage_classification_model_inception.h5'
 # Khung hình mới nhất được lưu ở đây
 latest_frames = []
 stop_event = threading.Event()  # Sự kiện để dừng cả server và hiển thị frame
@@ -25,7 +28,7 @@ final_classification_result = None # Kết quả phân loại cuối cùng
 model_inception = load_model(model_path)
 
 
-@app.post("/upload")
+@test_router.post("/upload")
 async def upload_image(request: Request):
     # global latest_frame
     global latest_frames
@@ -49,7 +52,7 @@ async def upload_image(request: Request):
         #     latest_frames.pop(0)
     return {"message": "Frame received"}
 
-@app.get("/result")
+@test_router.get("/result")
 def get_result():
     global classification_results, final_classification_result, latest_frames
 
@@ -126,7 +129,7 @@ def show_frame():
 
 
 def run_server():
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000, loop="asyncio")
+    config = uvicorn.Config(test_router, host="0.0.0.0", port=8000, loop="asyncio")
     server = uvicorn.Server(config)
 
     # Chạy server trong một luồng riêng
