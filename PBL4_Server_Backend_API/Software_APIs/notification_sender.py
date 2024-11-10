@@ -7,7 +7,7 @@ from pydantic import BaseModel
 app = fastapi.FastAPI()
 
 # Khởi tạo Firebase
-cred = credentials.Certificate(r"C:\Users\LENOVO\Downloads\token.json") # path to your token.json
+cred = credentials.Certificate(r"D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\token.json") # path to your token.json
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://ahrumiki-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })
@@ -17,7 +17,7 @@ class ResultModel(BaseModel):
     result: str
     isFull: bool
 # Endpoint upload_result
-@app.post("/api/upload/result")
+@app.post("/api/noti")
 def upload_result(data: ResultModel):
     ref = db.reference(data.result)
     increment_bin_status(ref)
@@ -37,6 +37,7 @@ def increment_bin_status(ref: db.Reference):
     updated_value = current_value + 1
     ref.child('Emptiness').set(updated_value)
     print(f"Dữ liệu đã được cập nhật: Emptiness = {updated_value}")
+
 
 def bin_full(ref: db.Reference, isFull: bool):
     ref.child('isFull').set(isFull)
