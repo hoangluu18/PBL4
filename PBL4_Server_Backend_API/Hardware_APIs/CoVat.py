@@ -15,7 +15,10 @@ from tensorflow.keras.preprocessing import image as keras_image
 from tensorflow.keras.models import load_model
 # app = FastAPI()
 IsHaveObject_router = APIRouter()
+UPLOAD_FOLDER_Have = './uploadObject/IsHave'
+UPLOAD_FOLDER_No = './uploadObject/NoHave'
 UPLOAD_FOLDER = './uploadObject'
+
 model_path = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_binary_model.h5' #model phan loai co vat hay khong ?
 
 # Khung hình mới nhất được lưu ở đây
@@ -29,11 +32,11 @@ model_inception = load_model(model_path)
 
 @IsHaveObject_router.post("/upload")
 async def upload_image(request: Request):
-    # global latest_frame
     global latest_frames
+    res = "0"
+
     # Đọc dữ liệu từ file ảnh được tải lên
-    res = "chuaCo"
-    print(res)
+
     if request.headers.get('Content-Type') == 'image/jpeg':
         contents = await request.body()
 
@@ -49,10 +52,17 @@ async def upload_image(request: Request):
         predicted_category, probability = predict_waste_category(image_path)
         print(predicted_category, probability)
         classification_results.append((predicted_category, probability))
+        if predicted_category == 'IsHaveObject':
+            image_path_have = os.path.join(UPLOAD_FOLDER_Have, f"frame_{timestamp}.jpg")
+            cv2.imwrite(image_path_have, frame)
+            os.remove(image_path)
+            return "1"
+        else:
+            image_path_nohave = os.path.join(UPLOAD_FOLDER_No, f"frame_{timestamp}.jpg")
+            cv2.imwrite(image_path_nohave, frame)
+            os.remove(image_path)
 
-        res = predicted_category
-
-    return {"message": res}
+    return "0"
 
 @IsHaveObject_router.get("/result")
 def get_result():
@@ -166,7 +176,7 @@ if __name__ == "__main__":
     server_thread.start()
 
     # Gọi hàm hiển thị frame trên cửa sổ
-    show_frame()
+
 
     # Đợi server kết thúc
     server_thread.join()
