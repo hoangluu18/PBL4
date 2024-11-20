@@ -12,9 +12,9 @@ const char *password = "123456789";
 ESP8266WebServer server(80);
 
 // url
-String esp32cam_url_capture = "http://192.168.120.244/capture";
-String serverName_getResult = "http://192.168.120.9:8000/test/result";
-String serverNameSoftwareApiPushNoti = "http://192.168.120.9:8000/noti/api/upload/result";
+String esp32cam_url_capture = "http://192.168.52.169/capture";
+String serverName_getResult = "http://192.168.52.169:8000/test/result";
+String serverNameSoftwareApiPushNoti = "http://192.168.52.9:8000/noti/api/upload/result";
 
 
 // Cảm biến siêu âm

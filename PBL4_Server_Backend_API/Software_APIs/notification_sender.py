@@ -8,7 +8,7 @@ from pydantic import BaseModel
 # app = fastapi.FastAPI()
 noti_router = APIRouter()
 # Khởi tạo Firebase
-cred = credentials.Certificate(r"C:\Users\LENOVO\Downloads\token.json") # path to your token.json
+cred = credentials.Certificate(r"D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\token.json") # path to your token.json
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://ahrumiki-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })

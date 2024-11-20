@@ -16,9 +16,9 @@ from tensorflow.keras.models import load_model
 # app = FastAPI()
 test_router = APIRouter()
 UPLOAD_FOLDER = './uploads'
-#model_path = 'E:/Workspace/PBL4/PBL4_Server_Backend_API/ModelAI/garbage_classification_model_inception_50.h5'
+model_path = 'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception.h5'
 
-model_path = 'C:/Users/LENOVO/Downloads/garbage_classification_model_inception.h5'
+#model_path = 'C:/Users/LENOVO/Downloads/garbage_classification_model_inception.h5'
 # Khung hình mới nhất được lưu ở đây
 latest_frames = []
 stop_event = threading.Event()  # Sự kiện để dừng cả server và hiển thị frame
