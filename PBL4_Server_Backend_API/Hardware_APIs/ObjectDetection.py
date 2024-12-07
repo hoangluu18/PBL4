@@ -52,7 +52,7 @@ def predict_waste_category(image_path):
     return category, probability
 
 # API endpoint
-@ObjectDetection_router.post("")
+@ObjectDetection_router.post("/")
 async def upload_image(request: Request):
     global latest_frames, classification_results
 
@@ -76,7 +76,7 @@ async def upload_image(request: Request):
 
     return {"status": 0}
 
-@ObjectDetection_router.get("")
+@ObjectDetection_router.get("/")
 def get_result():
     global classification_results, final_classification_result, latest_frames
 

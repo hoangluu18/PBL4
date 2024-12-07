@@ -64,7 +64,7 @@ def get_final_result():
 
 
 # API Endpoints
-@GarbageClassification_router.post("")
+@GarbageClassification_router.post("/")
 async def upload_image(request: Request):
     global latest_frames, classification_results
 
@@ -78,7 +78,7 @@ async def upload_image(request: Request):
     return {"message": "Frame received"}
 
 
-@GarbageClassification_router.get("")
+@GarbageClassification_router.get("/")
 def get_result():
     global classification_results, final_classification_result, latest_frames
 
