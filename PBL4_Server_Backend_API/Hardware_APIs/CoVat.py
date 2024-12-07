@@ -19,7 +19,7 @@ UPLOAD_FOLDER_Have = './uploadObject/IsHave'
 UPLOAD_FOLDER_No = './uploadObject/NoHave'
 UPLOAD_FOLDER = './uploadObject'
 
-model_path = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_binary_model.h5' #model phan loai co vat hay khong ?
+model_path = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_binary_model.h5'  #model phan loai co vat hay khong ?
 
 # Khung hình mới nhất được lưu ở đây
 latest_frames = []
@@ -33,7 +33,7 @@ model_inception = load_model(model_path)
 @IsHaveObject_router.post("/upload")
 async def upload_image(request: Request):
     global latest_frames
-    res = "0"
+
 
     # Đọc dữ liệu từ file ảnh được tải lên
 
@@ -56,13 +56,13 @@ async def upload_image(request: Request):
             image_path_have = os.path.join(UPLOAD_FOLDER_Have, f"frame_{timestamp}.jpg")
             cv2.imwrite(image_path_have, frame)
             os.remove(image_path)
-            return "1"
+            return 1
         else:
             image_path_nohave = os.path.join(UPLOAD_FOLDER_No, f"frame_{timestamp}.jpg")
             cv2.imwrite(image_path_nohave, frame)
             os.remove(image_path)
-
-    return "0"
+#duck
+    return 0
 
 @IsHaveObject_router.get("/result")
 def get_result():
@@ -108,9 +108,9 @@ def predict_waste_category(image_path):
     # Dự đoán loại rác
     prediction = model_inception.predict(img_array)[0][0]
     if prediction < 0.5:
-        return "IsHaveObject", prediction
+        return "IsHaveObject", 1- prediction
     else:
-        return "NoThings", prediction
+        return "NoThings", 1- prediction
 
     # waste_categories = [ 'glass', 'metal', 'paper', 'plastic']
     # predicted_category_index = np.argmax(prediction)

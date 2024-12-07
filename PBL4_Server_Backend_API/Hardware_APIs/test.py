@@ -16,7 +16,7 @@ from tensorflow.keras.models import load_model
 # app = FastAPI()
 test_router = APIRouter()
 UPLOAD_FOLDER = './uploads'
-model_path = 'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception.h5'
+model_path = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception_v3_p4.h5'
 
 #model_path = 'C:/Users/LENOVO/Downloads/garbage_classification_model_inception.h5'
 # Khung hình mới nhất được lưu ở đây
@@ -83,6 +83,7 @@ def get_result():
             "probability": float(final_classification_result[1])  # Chuyển numpy.float32 thành float
         }
     else:
+        
         return {"message": "Not enough frames yet"}
 
 # Nhan dien rac
