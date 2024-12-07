@@ -1,15 +1,14 @@
 from fastapi import FastAPI
-from Software_APIs.notification_sender import noti_router
-from Hardware_APIs.test import test_router
-from Hardware_APIs.CoVat import IsHaveObject_router
+from Software_APIs.ResultSender import Result_Sender_router
+from Hardware_APIs.GarbageClassification import GarbageClassification_router
+from Hardware_APIs.ObjectDetection import ObjectDetection_router
 
 
 app = FastAPI()
 
-app.include_router(noti_router, prefix='/noti')
-app.include_router(test_router, prefix='/test')
-
-app.include_router(IsHaveObject_router, prefix='/ishaveobject')
+app.include_router(Result_Sender_router, prefix='/result')
+app.include_router(GarbageClassification_router, prefix='/garbage')
+app.include_router(ObjectDetection_router, prefix='/object')
 
 if __name__ == "__main__":
     import uvicorn
