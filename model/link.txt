@@ -1,1 +1,2 @@
-https://www.kaggle.com/code/hongluvit/model1
+mô hình phân loại rác thải: https://www.kaggle.com/code/hongluvit/phan-loai-4-lop-v5-p3
+mô hình xác định có rác: https://www.kaggle.com/code/hongluvit/xac-dinh-co-rac-04
