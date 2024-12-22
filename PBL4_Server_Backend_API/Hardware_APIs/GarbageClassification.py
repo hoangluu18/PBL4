@@ -12,13 +12,13 @@ from collections import Counter
 from PIL import Image
 from tensorflow.keras.preprocessing import image as keras_image
 from tensorflow.keras.models import load_model
-
+import Global
 # Constants
 UPLOAD_FOLDER = './uploads'
-MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception_v5_p2.h5'
-WASTE_CATEGORIES = ['other', 'metal', 'paper', 'plastic'] #Class other o dau?
+MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception_v5.h5'
+WASTE_CATEGORIES = ['metal', 'other', 'paper', 'plastic'] #Class other o dau?
 
-# Globals
+
 latest_frames = []
 classification_results = []
 final_classification_result = None
@@ -64,28 +64,34 @@ def get_final_result():
 
 
 # API Endpoints
-@GarbageClassification_router.post("/")
+@GarbageClassification_router.post("/upload")
 async def upload_image(request: Request):
     global latest_frames, classification_results
 
     if request.headers.get('Content-Type') == 'image/jpeg':
         contents = await request.body()
         frame, image_path = save_frame(contents)
+        Global.lastestImage = image_path
+        print(Global.lastestImage)
         latest_frames.append(frame)
         predicted_category, probability = predict_waste_category(image_path)
         classification_results.append((predicted_category, probability))
-
+        print("----------", predicted_category)
+        print("\nprobability", probability)
+    else: print("ko in")
     return {"message": "Frame received"}
 
 
-@GarbageClassification_router.get("/")
+@GarbageClassification_router.get("/result")
 def get_result():
     global classification_results, final_classification_result, latest_frames
 
     if len(classification_results) >= 3:
         final_classification_result = get_final_result()
+
         classification_results.clear()
         latest_frames.clear()
+        print("----->>>>",final_classification_result[0])
         return {
             "result": final_classification_result[0],
             "probability": float(final_classification_result[1])

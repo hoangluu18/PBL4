@@ -18,7 +18,7 @@ import uvicorn
 UPLOAD_FOLDER = './uploadObject'
 UPLOAD_FOLDER_HAVE = os.path.join(UPLOAD_FOLDER, 'IsHave')
 UPLOAD_FOLDER_NO = os.path.join(UPLOAD_FOLDER, 'NoHave')
-MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_binary_model.h5'
+MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_binary_model_04.h5'
 
 # Khởi tạo model
 model_inception = load_model(MODEL_PATH)
@@ -52,7 +52,7 @@ def predict_waste_category(image_path):
     return category, probability
 
 # API endpoint
-@ObjectDetection_router.post("/")
+@ObjectDetection_router.post("/upload")
 async def upload_image(request: Request):
     global latest_frames, classification_results
 
@@ -65,38 +65,17 @@ async def upload_image(request: Request):
         image_path = save_image(frame, UPLOAD_FOLDER)
         predicted_category, probability = predict_waste_category(image_path)
         classification_results.append((predicted_category, probability))
-
+        print("--------",predicted_category)
         if predicted_category == 'IsHaveObject':
             save_image(frame, UPLOAD_FOLDER_HAVE)
+            os.remove(image_path)
+            return {"status": 1}
         else:
             save_image(frame, UPLOAD_FOLDER_NO)
-
-        os.remove(image_path)
-        return {"status": 1}
+            os.remove(image_path)
+            return {"status": 0}
 
     return {"status": 0}
-
-@ObjectDetection_router.get("/")
-def get_result():
-    global classification_results, final_classification_result, latest_frames
-
-    if len(classification_results) >= 3:
-        categories = [result[0] for result in classification_results]
-        most_common_category = Counter(categories).most_common(1)[0][0]
-
-        relevant_results = [result for result in classification_results if result[0] == most_common_category]
-        best_result = max(relevant_results, key=lambda x: x[1])
-
-        final_classification_result = best_result
-        classification_results.clear()
-        latest_frames.clear()
-
-        return {
-            "result": final_classification_result[0],
-            "probability": float(final_classification_result[1])
-        }
-
-    return {"message": "Not enough frames yet"}
 
 # Hiển thị frame
 def show_frame():
@@ -139,3 +118,5 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=run_server)
     server_thread.start()
     server_thread.join()
+
+
