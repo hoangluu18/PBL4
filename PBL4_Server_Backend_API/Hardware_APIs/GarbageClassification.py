@@ -16,7 +16,7 @@ from tensorflow.keras.models import load_model
 # Constants
 UPLOAD_FOLDER = './uploads'
 MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception_v5_p2.h5'
-WASTE_CATEGORIES = ['other', 'metal', 'paper', 'plastic'] #Class other o dau?
+WASTE_CATEGORIES = ['other', 'metal', 'paper', 'plastic']
 
 # Globals
 latest_frames = []
