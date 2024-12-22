@@ -16,7 +16,7 @@ import Global
 # Constants
 UPLOAD_FOLDER = './uploads'
 MODEL_PATH = r'D:\Code\pbl44\PBL4\PBL4_Server_Backend_API\GarbageDetection\garbage_classification_model_inception_v5.h5'
-WASTE_CATEGORIES = ['metal', 'other', 'paper', 'plastic'] #Class other o dau?
+WASTE_CATEGORIES = ['metal', 'other', 'paper', 'plastic']
 
 
 latest_frames = []
